@@ -27,7 +27,7 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<!-- Meta Pixel Code -->
+<!-- Meta Pixel Code (Debugged) -->
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -37,8 +37,11 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
+
 fbq('init', '1368720328507773');
-fbq('track', 'PageView'); // Standard PageView (Har baar fire hoga)
+fbq('track', 'PageView');
+
+console.log("✅ FB Pixel Script Loaded. PageView fired.");
 </script>
 <noscript>
   <img height="1" width="1" style="display:none"
@@ -489,12 +492,6 @@ body::after {
 (function () {
   "use strict";
 
-  function safeTrack() {
-    if (typeof window.fbq === "function") {
-      try { window.fbq.apply(window, arguments); } catch (e) {}
-    }
-  }
-
   // Dynamic Year
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -504,16 +501,19 @@ body::after {
   
   buttons.forEach(function(btn) {
     btn.addEventListener("click", function () {
-      // Event Manager testing ke liye har click par fire karna chahiye
-      safeTrack('track', 'Lead', {
-        source: 'Landing Page',
-        platform: 'Telegram'
-      });
-      safeTrack('trackCustom', 'TelegramSubscribe', {
-        source: 'Landing Page',
-        platform: 'Telegram'
-      });
-      console.log("✅ Subscribe Lead tracked");
+      if (typeof window.fbq === "function") {
+        window.fbq('track', 'Lead', {
+          source: 'Landing Page',
+          platform: 'Telegram'
+        });
+        window.fbq('trackCustom', 'TelegramSubscribe', {
+          source: 'Landing Page',
+          platform: 'Telegram'
+        });
+        console.log("✅ Click Tracked: Lead & TelegramSubscribe sent to Meta.");
+      } else {
+        console.error("❌ Click Tracked: BUT fbq is not available. Pixel might be blocked.");
+      }
     });
   });
 

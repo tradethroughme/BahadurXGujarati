@@ -29,21 +29,16 @@
 
 <!-- Meta Pixel Code -->
 <script>
-!function(f,b,e,v,n,t,s){
-  if(f.fbq)return;
-  n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;
-  n.push=n;
-  n.loaded=!0;
-  n.version='2.0';
-  n.queue=[];
-  t=b.createElement(e);
-  t.async=!0;
-  t.src=v;
-  s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s);
-}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '1368720328507773');
+fbq('track', 'PageView'); // Standard PageView (Har baar fire hoga)
 </script>
 <noscript>
   <img height="1" width="1" style="display:none"
@@ -494,9 +489,6 @@ body::after {
 (function () {
   "use strict";
 
-  var PAGEVIEW_KEY  = "gt_pageview_tracked";
-  var SUBSCRIBE_KEY = "gt_subscribe_tracked";
-
   function safeTrack() {
     if (typeof window.fbq === "function") {
       try { window.fbq.apply(window, arguments); } catch (e) {}
@@ -507,35 +499,21 @@ body::after {
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // PageView Tracking
-  try {
-    if (!localStorage.getItem(PAGEVIEW_KEY)) {
-      safeTrack('track', 'PageView');
-      localStorage.setItem(PAGEVIEW_KEY, "true");
-      console.log("✅ PageView tracked");
-    }
-  } catch (e) {
-    safeTrack('track', 'PageView');
-  }
-
   // Subscribe Tracking (Catches both main and sticky buttons)
   var buttons = document.querySelectorAll(".subscribe-btn-main, .subscribe-btn-sticky");
   
   buttons.forEach(function(btn) {
     btn.addEventListener("click", function () {
-      try {
-        if (!localStorage.getItem(SUBSCRIBE_KEY)) {
-          safeTrack('track', 'Lead');
-          safeTrack('trackCustom', 'TelegramSubscribe', {
-            source: 'Landing Page',
-            platform: 'Telegram'
-          });
-          localStorage.setItem(SUBSCRIBE_KEY, "true");
-          console.log("✅ Subscribe tracked");
-        }
-      } catch (e) {
-        safeTrack('track', 'Lead');
-      }
+      // Event Manager testing ke liye har click par fire karna chahiye
+      safeTrack('track', 'Lead', {
+        source: 'Landing Page',
+        platform: 'Telegram'
+      });
+      safeTrack('trackCustom', 'TelegramSubscribe', {
+        source: 'Landing Page',
+        platform: 'Telegram'
+      });
+      console.log("✅ Subscribe Lead tracked");
     });
   });
 
